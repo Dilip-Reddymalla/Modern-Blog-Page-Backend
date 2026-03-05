@@ -1,0 +1,66 @@
+const mongoose = require("mongoose");
+
+const postSchema = new mongoose.Schema(
+{
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 200
+    },
+
+    content: {
+        type: String,
+        required: true
+    },
+
+    coverImage: {
+        type: String,
+        default: ""
+    },
+
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true
+    },
+
+    tags: [{
+        type: String,
+        trim: true
+    }],
+
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }],
+
+    comments: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+
+    status: {
+        type: String,
+        enum: ["draft", "published"],
+        default: "published"
+    }
+
+},
+{
+    timestamps: true
+});
+
+const postModel = mongoose.model("post", postSchema);
+
+module.exports = postModel;

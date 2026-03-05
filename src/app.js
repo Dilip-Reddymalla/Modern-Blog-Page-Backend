@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cookieParser = require("cookie-parser");
 const authRouter = require('./routes/auth.routes');
+const createPostRouter = require('./routes/createPost.routes');
 
 
 
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 
 app.use('/api/auth', authRouter);
+app.use('/api/create/', createPostRouter);
 
 
 
