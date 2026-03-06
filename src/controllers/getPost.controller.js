@@ -1,5 +1,6 @@
 const postModel = require("../models/post.model");
-async function getAllPosts(req, res) {
+const mongoose = require("mongoose");
+async function getAllPosts(req, res, next) {
   try {
     const posts = await postModel
       .find({
@@ -15,14 +16,11 @@ async function getAllPosts(req, res) {
       posts: posts,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching posts",
-      error: error.message,
-    });
+    next(error);
   }
 }
 
-async function pendingAprovalPosts(req, res) {
+async function pendingAprovalPosts(req, res, next) {
   try {
     const posts = await postModel
       .find({
@@ -35,29 +33,29 @@ async function pendingAprovalPosts(req, res) {
       posts: posts,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching posts",
-      error: error.message,
-    });
+    next(error);
   }
 }
 
-async function postById(req, res) {
+async function postById(req, res, next) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: "Invalid Post ID format" });
+    }
     const post = await postModel.findById(req.params.id);
+    if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+    }
     res.json({
       message: "Post fetched",
       post,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching posts",
-      error: error.message,
-    });
+    next(error);
   }
 }
 
-async function postByTag(req, res){
+async function postByTag(req, res, next){
   try{
     const posts = await postModel.find({
       status:"published",
@@ -69,10 +67,7 @@ async function postByTag(req, res){
       posts,
     })
   }catch(error){
-    res.status(500).json({
-      message: "Error fetching posts",
-      error: error.message,
-    });
+    next(error);
   }
 }
 

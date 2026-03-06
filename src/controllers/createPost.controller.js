@@ -1,7 +1,7 @@
 const postModel = require('../models/post.model');
 const uploadFile =  require("../services/imagekit.service.js");
 
-async function createPost(req, res) {
+async function createPost(req, res, next) {
 
     try {
 
@@ -33,12 +33,7 @@ async function createPost(req, res) {
         });
 
     } catch (error) {
-
-        res.status(500).json({
-            message: "Error creating post",
-            error: error.message
-        });
-
+        next(error);
     }
 }
 

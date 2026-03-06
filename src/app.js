@@ -9,6 +9,7 @@ const createPostRouter = require('./routes/createPost.routes');
 const getPostsRouter = require('./routes/getPosts.routes');
 const interactionRouter = require('./routes/interaction.routes');
 const adminRouter = require('./routes/admin.routes');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use('/api/get',getPostsRouter);
 app.use('/api/interaction',interactionRouter);
 app.use('/api/admin',adminRouter);
 
-
+// Global Error Handler should be the last middleware
+app.use(errorHandler);
 
 module.exports = app;
