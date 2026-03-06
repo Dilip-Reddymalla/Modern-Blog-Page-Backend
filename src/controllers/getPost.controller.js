@@ -37,12 +37,13 @@ async function pendingAprovalPosts(req, res, next) {
   }
 }
 
-async function postById(req, res, next) {
+async function postBySlug(req, res, next) {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ message: "Invalid Post ID format" });
-    }
-    const post = await postModel.findById(req.params.id);
+    const post = await postModel.findOne({ slug: req.params.slug })
+      .populate("author", "username ")
+      .populate("likes", "username ")
+      .populate("comments.user", "username");
+
     if (!post) {
         return res.status(404).json({ message: "Post not found" });
     }
@@ -71,4 +72,4 @@ async function postByTag(req, res, next){
   }
 }
 
-module.exports = { getAllPosts, pendingAprovalPosts, postById, postByTag };
+module.exports = { getAllPosts, pendingAprovalPosts, postBySlug, postByTag };

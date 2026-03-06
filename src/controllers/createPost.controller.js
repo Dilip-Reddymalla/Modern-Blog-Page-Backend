@@ -1,5 +1,6 @@
 const postModel = require('../models/post.model');
 const uploadFile =  require("../services/imagekit.service.js");
+const slugify = require('slugify');
 
 async function createPost(req, res, next) {
 
@@ -15,12 +16,15 @@ async function createPost(req, res, next) {
                 message: "Title and content are required"
             });
         }
+
+        const slug = slugify(title, { lower: true, strict: true }) + '-' + Date.now();
         
         if(req.file){
             imageUrl = await uploadFile(req.file);
         }
         const newPost = await postModel.create({
             title: title,
+            slug: slug,
             content: content,
             tags: tags || [],
             coverImage: imageUrl,

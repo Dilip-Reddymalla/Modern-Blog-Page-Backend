@@ -36,7 +36,7 @@ async function registerUser(req, res, next) {
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days 
     });
 
     res.status(201).json({
@@ -74,13 +74,13 @@ async function loginUser(req, res, next) {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" } // Added expiration to token
+      { expiresIn: "7d" }
     );
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
     });
 
     res.status(200).json({
