@@ -1,65 +1,77 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema(
-{
+  {
     title: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 200
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 200,
     },
 
     content: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     coverImage: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
 
     author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
 
-    tags: [{
+    tags: [
+      {
         type: String,
-        trim: true
-    }],
+        trim: true,
+      },
+    ],
 
-    likes: [{
+    likes: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
-    }],
+        ref: "user",
+      },
+    ],
 
-    comments: [{
+    comments: [
+      {
         user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
         },
         text: {
-            type: String,
-            required: true
+          type: String,
+          required: true,
         },
         createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    }],
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
 
     status: {
-        type: String,
-        enum: ["draft", "published"],
-        default: "published"
-    }
+      type: String,
+      enum: ["draft", "published"],
+      default: "published",
+    },
 
-},
-{
-    timestamps: true
-});
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 const postModel = mongoose.model("post", postSchema);
 
