@@ -1,7 +1,8 @@
 const postModel = require("../models/post.model.js");
 const uploadFile = require("../services/imagekit.service.js");
 const slugify = require("slugify");
-const nanoid = require("nanoid");
+const {nanoid} = require("nanoid");
+const mongoose = require("mongoose");
 
 async function createPost(req, res, next) {
   try {

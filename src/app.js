@@ -3,8 +3,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const cors = require('cors');
-const helmet = require('helmet');
+const cors = require("cors");
+const helmet = require("helmet");
 
 const authRouter = require("./routes/auth.routes");
 const PostRouter = require("./routes/post.routes");
@@ -14,23 +14,34 @@ const adminRouter = require("./routes/admin.routes");
 const userRouter = require("./routes/user.routes");
 const errorHandler = require("./middleware/errorHandler");
 
-const { globalLimiter } = require('./middleware/rateLimit.middleware');
+const { globalLimiter } = require("./middleware/rateLimit.middleware");
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 // Security Headers
 app.use(helmet());
 
-// CORS Configuration 
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true,
-}));
+// CORS Configuration
+const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND_URL];
 
-app.use(globalLimiter); // Apply global rate limiting to *all* requests
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(globalLimiter); // Apply global rate limiting to *all* requests
 
 app.use("/api/auth", authRouter);
 app.use("/api/create", PostRouter);
