@@ -14,11 +14,16 @@ router.patch(
   authMiddleware.authMiddlewareCheckUser,
   toggleAndCommentController.addComment,
 );
-router.patch(
+router.delete(
   "/:postid/deleteComment/:commentId",
   authMiddleware.authMiddlewareCheckUser,
   toggleAndCommentController.deleteComment,
 ); 
+router.patch(
+  "/:postId/editComment/:commentId",
+  authMiddleware.authMiddlewareCheckUser,
+  toggleAndCommentController.editComment
+);
 router.get("/:id/comments",toggleAndCommentController.getCommentByPostId);
 
 module.exports = router;

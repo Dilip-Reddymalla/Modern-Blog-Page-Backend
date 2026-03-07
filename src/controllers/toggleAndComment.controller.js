@@ -121,6 +121,51 @@ async function deleteComment(req, res, next) {
   }
 }
 
+async function editComment(req, res, next) {
+  try {
+    const postId = req.params.postId;
+    const commentId = req.params.commentId;
+    const { text } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(postId) || !mongoose.Types.ObjectId.isValid(commentId)) {
+      return res.status(400).json({ message: "Invalid Post or Comment ID format" });
+    }
+
+    if (!text) {
+      return res.status(400).json({ message: "Comment text is required" });
+    }
+
+    const userId = req.user.id;
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // Only the author of the comment can edit it
+    if (comment.user.toString() !== userId) {
+       return res.status(403).json({ message: "You can only edit your own comments" });
+    }
+
+    comment.text = text;
+    await post.save();
+
+    res.status(200).json({
+      message: "Comment updated successfully",
+      comment: comment
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getCommentByPostId(req, res, next) {
   try {
     const postId = req.params.id;
@@ -142,4 +187,4 @@ async function getCommentByPostId(req, res, next) {
   }
 }
 
-module.exports = { toggleLike, addComment, deleteComment, getCommentByPostId};
+module.exports = { toggleLike, addComment, deleteComment, editComment, getCommentByPostId};
