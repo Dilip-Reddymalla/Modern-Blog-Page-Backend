@@ -98,4 +98,39 @@ async function loginUser(req, res, next) {
   }
 }
 
-module.exports = { registerUser, loginUser };
+async function getAllUsers(req, res, next) {
+  try {
+    const users = await userModel.find({}, "-password");
+    res.status(200).json({ users });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function makeAdmin(req, res, next) {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.role = "admin";
+    await user.save();
+    res.status(200).json({
+      message: "User promoted to admin successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { registerUser, loginUser, getAllUsers, makeAdmin };
