@@ -50,7 +50,7 @@ async function addComment(req, res, next) {
     }
 
     const alreadyCommented = post.comments.some(
-      (comment) => comment.userId.toString() === userId,
+      (comment) => comment.user.toString() === userId,
     );
 
     if (alreadyCommented) {
@@ -66,7 +66,7 @@ async function addComment(req, res, next) {
 
     await post.save();
 
-    res.json({
+    res.status(200).json({
       message: "Comments Updated",
       commentsCount: post.comments.length,
     });
