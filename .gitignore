@@ -16,6 +16,9 @@ pnpm-debug.log*
 logs/
 *.log
 
+# documentation
+FRONTEND_GUIDE_AND_API_DOCS.md
+
 # Runtime Data
 
 pids

@@ -75,4 +75,71 @@ async function addComment(req, res, next) {
   }
 }
 
-module.exports = { toggleLike, addComment };
+async function deleteComment(req, res, next) {
+  try {
+    const postId = req.params.postid;
+    const commentId = req.params.commentId;
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: "Invalid Post ID format" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(commentId)) {
+      return res.status(400).json({ message: "Invalid comment ID format" });
+    }
+
+    const userId = req.user.id;
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({
+        message: "Comment not found",
+      });
+    }
+
+    if (comment.user.toString() === userId || req.user.role === "admin") {
+      comment.deleteOne();
+
+      await post.save();
+
+      res.json({
+        message: "Comment deleted successfully",
+        comments: post.comments,
+      });
+    }
+
+    return res.status(403).json({
+      message: "Admin or author access required",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getCommentByPostId(req, res, next) {
+  try {
+    const postId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ message: "Invalid Post ID format" });
+    }
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    return res.status(200).json({
+      message: "Fectched the comments for the post",
+      comments: post.comments,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { toggleLike, addComment, deleteComment, getCommentByPostId};

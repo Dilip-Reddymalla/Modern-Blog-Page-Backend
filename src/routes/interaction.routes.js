@@ -10,9 +10,15 @@ router.patch(
   toggleAndCommentController.toggleLike,
 );
 router.patch(
-  "/addComment/:id",
+  "/:id/addComment",
   authMiddleware.authMiddlewareCheckUser,
   toggleAndCommentController.addComment,
 );
+router.patch(
+  "/:postid/deleteComment/:commentId",
+  authMiddleware.authMiddlewareCheckUser,
+  toggleAndCommentController.deleteComment,
+); 
+router.get("/:id/comments",toggleAndCommentController.getCommentByPostId);
 
 module.exports = router;
