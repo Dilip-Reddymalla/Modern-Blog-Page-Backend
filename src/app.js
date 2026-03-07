@@ -7,7 +7,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const authRouter = require("./routes/auth.routes");
-const PostRouter = require("./routes/Post.routes");
+const PostRouter = require("./routes/post.routes");
 const getPostsRouter = require("./routes/getPosts.routes");
 const interactionRouter = require("./routes/interaction.routes");
 const adminRouter = require("./routes/admin.routes");
