@@ -13,7 +13,7 @@ const globalLimiter = rateLimit({
 // Stricter rate limiter specifically for authentication routes (login/register) to prevent brute-force attacks
 const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour window
-    max: 15, // Start blocking after 15 requests
+    max: 100, // Increased to 100 to prevent blocking during development/testing
     message: {
         message: 'Too many accounts created or login attempts from this IP, please try again after an hour'
     },

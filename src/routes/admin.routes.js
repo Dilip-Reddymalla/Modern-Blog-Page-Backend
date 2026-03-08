@@ -7,6 +7,7 @@ const router = express.Router();
 router.patch('/approve/:id', authMiddleware.authMiddlewareCheckAdmin, adminController.approvePost);
 router.delete('/post/:id', authMiddleware.authMiddlewareCheckAdmin, adminController.forceDeletePost);
 router.put('/user/:id/ban', authMiddleware.authMiddlewareCheckAdmin, adminController.banUser);
+router.put('/user/:id/unban', authMiddleware.authMiddlewareCheckAdmin, adminController.unbanUser);
 router.get('/stats', authMiddleware.authMiddlewareCheckAdmin, adminController.getSystemStats);
 
 module.exports = router;

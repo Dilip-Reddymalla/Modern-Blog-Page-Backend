@@ -1,27 +1,29 @@
 const { body } = require('express-validator');
 
 const registerValidation = [
-    // Username must be at least 3 chars long
+    // Username: allow letters, numbers, underscores, hyphens, and dots
     body('username')
         .trim()
-        .isLength({ min: 3, max: 30 }).withMessage('Username must be strictly between 3 and 30 characters')
-        .isAlphanumeric().withMessage('Username must only contain letters and numbers'),
+        .isLength({ min: 3, max: 30 }).withMessage('Username must be between 3 and 30 characters')
+        .matches(/^[a-zA-Z0-9_.-]+$/).withMessage('Username can only contain letters, numbers, underscores, hyphens, and dots')
+        .escape(),
     
-    // Email must be a valid email format
+    // Email: provide standard validation
     body('email')
         .trim()
         .isEmail().withMessage('Please provide a valid email address')
-        .normalizeEmail(), // Converts uppercase to lowercase, removes dots in gmail etc.
+        .normalizeEmail(), 
     
-    // Password must be at least 6 chars
+    // Password: at least 6 characters
     body('password')
         .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
 
-    // Bio is optional, but if provided, it shouldn't exceed a certain length
+    // Bio: optional, with max length and escaping
     body('bio')
         .optional()
         .trim()
         .isLength({ max: 500 }).withMessage('Bio cannot exceed 500 characters')
+        .escape()
 ];
 
 const loginValidation = [

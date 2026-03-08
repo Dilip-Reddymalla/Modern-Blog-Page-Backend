@@ -7,6 +7,12 @@ const mongoose = require("mongoose");
 async function createPost(req, res, next) {
   try {
     const { title, content, tags } = req.body;
+    console.log(req.user);
+    if(req.user.status ===  "banned"){
+      return res.status(403).json({
+        message: "You are banned from creating posts",
+      });
+    }
 
     let imageUrl = null;
 

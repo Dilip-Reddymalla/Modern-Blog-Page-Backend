@@ -85,6 +85,36 @@ async function banUser(req, res, next) {
   }
 }
 
+async function unbanUser(req, res, next) {
+  try {
+    const userIdToUnban = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(userIdToUnban)) {
+      return res.status(400).json({ message: "Invalid User ID format" });
+    }
+
+    const user = await userModel.findById(userIdToUnban);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.status === "active") {
+      return res.status(400).json({ message: "User is already active" });
+    }
+
+    user.status = "active";
+    await user.save();
+
+    res.status(200).json({
+      message: "User unbanned successfully",
+      user: { _id: user._id, username: user.username, status: user.status },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getSystemStats(req, res, next) {
   try {
     const totalUsers = await userModel.countDocuments();
@@ -120,4 +150,10 @@ async function getSystemStats(req, res, next) {
   }
 }
 
-module.exports = { approvePost, forceDeletePost, banUser, getSystemStats };
+module.exports = {
+  approvePost,
+  forceDeletePost,
+  banUser,
+  unbanUser,
+  getSystemStats,
+};

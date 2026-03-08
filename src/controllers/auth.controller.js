@@ -9,8 +9,9 @@ async function registerUser(req, res, next) {
       $or: [{ username: username }, { email: email }],
     });
     if (isUserAlreadyExist) {
+      const field = isUserAlreadyExist.username === username ? "Username" : "Email";
       return res.status(409).json({
-        message: "User already exists",
+        message: `${field} is already taken`,
       });
     }
 
@@ -28,6 +29,7 @@ async function registerUser(req, res, next) {
       {
         id: user._id,
         role: user.role,
+        status: user.status,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
@@ -72,6 +74,7 @@ async function loginUser(req, res, next) {
       {
         id: user._id,
         role: user.role,
+        status: user.status,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -91,6 +94,7 @@ async function loginUser(req, res, next) {
         username: user.username,
         email: user.email,
         role: user.role,
+        status: user.status,
       },
     });
   } catch (error) {
@@ -126,6 +130,7 @@ async function makeAdmin(req, res, next) {
         username: user.username,
         email: user.email,
         role: user.role,
+        status: user.status,
       },
     });
   } catch (error) {
