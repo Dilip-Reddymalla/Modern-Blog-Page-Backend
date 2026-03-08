@@ -113,7 +113,7 @@ async function getAllUsers(req, res, next) {
 
 async function makeAdmin(req, res, next) {
   try {
-    const { userId } = req.body;
+    const userId  = req.params.id;
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
