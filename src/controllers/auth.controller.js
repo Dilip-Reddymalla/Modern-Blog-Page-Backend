@@ -138,4 +138,34 @@ async function makeAdmin(req, res, next) {
   }
 }
 
-module.exports = { registerUser, loginUser, getAllUsers, makeAdmin };
+async function removeAdmin(req, res, next) {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.role === "owner") {
+      return res.status(403).json({ message: "Cannot modify owner role" });
+    }
+    user.role = "user";
+    await user.save();
+    res.status(200).json({
+      message: "Admin access removed successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { registerUser, loginUser, getAllUsers, makeAdmin, removeAdmin };
