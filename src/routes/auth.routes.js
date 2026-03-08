@@ -12,6 +12,6 @@ const router = express.Router();
 router.post('/register', authLimiter, registerValidation, validateRequest, authController.registerUser);
 router.post('/login', authLimiter, loginValidation, validateRequest, authController.loginUser);
 router.get('/users',authLimiter,authMiddlewareCheckAdmin, authController.getAllUsers);
-router.patch('/make-admin',authLimiter, authMiddlewareCheckAdmin, authController.makeAdmin);
+router.patch('/make-admin/:id',authLimiter, authMiddlewareCheckAdmin, authController.makeAdmin);
 
 module.exports = router;
