@@ -56,6 +56,12 @@ app.use("/api/get", getPostsRouter);
 app.use("/api/interaction", interactionRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
+app.use("/api/health", (req,res)=>{
+  res.status(200).send("ok");
+});
+app.get("/", (req, res) => {
+  res.send("Server running");
+});
 
 // Global Error Handler should be the last middleware
 app.use(errorHandler);
