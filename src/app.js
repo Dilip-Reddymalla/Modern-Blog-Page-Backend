@@ -20,9 +20,6 @@ const app = express();
 
 app.set("trust proxy", 1);
 
-// Security Headers
-app.use(helmet());
-
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173",
@@ -30,21 +27,32 @@ const allowedOrigins = [
   process.env.FRONTEND_URL_2,
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+app.use(cors({
+  origin: (origin, callback) => {
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+    if (!origin || origin === "null") {
+      return callback(null, true);
+    }
 
-      console.log("Blocked by CORS:", origin);
-      callback(new Error("CORS not allowed"));
-    },
-    credentials: true,
-  }),
-);
+    const normalizedOrigin = origin.replace(/\/$/, "");
+
+    const normalizedAllowed = allowedOrigins
+      .filter(Boolean)
+      .map(o => o.replace(/\/$/, ""));
+
+    if (normalizedAllowed.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    console.log("Blocked by CORS:", origin);
+    callback(new Error("CORS not allowed"));
+  },
+  credentials: true,
+}));
+
+
+// Security Headers
+app.use(helmet());
 
 app.use(express.json());
 app.use(cookieParser());
