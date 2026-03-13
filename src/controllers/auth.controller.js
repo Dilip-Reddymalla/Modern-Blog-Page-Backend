@@ -90,6 +90,7 @@ async function loginUser(req, res, next) {
 
     res.status(200).json({
       message: "User logged in Succesfully",
+      token: token,
       user: {
         id: user._id,
         username: user.username,

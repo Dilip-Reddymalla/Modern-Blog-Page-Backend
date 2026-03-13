@@ -43,6 +43,7 @@ app.use(cors({
     callback(new Error(`CORS not allowed: ${origin}`));
   },
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
 }));
 
 

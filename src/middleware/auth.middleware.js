@@ -1,7 +1,17 @@
 const jwt = require("jsonwebtoken");
 
+const getToken = (req) => {
+  if (req.cookies && req.cookies.token) {
+    return req.cookies.token;
+  }
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    return req.headers.authorization.split(" ")[1];
+  }
+  return null;
+};
+
 const authMiddlewareCheckUser = (req, res, next) => {
-  const token = req.cookies.token;
+  const token = getToken(req);
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -15,7 +25,7 @@ const authMiddlewareCheckUser = (req, res, next) => {
 };
 const authMiddlewareCheckAdmin = (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = getToken(req);
 
     if (!token) {
       return res.status(401).json({
@@ -43,7 +53,7 @@ const authMiddlewareCheckAdmin = (req, res, next) => {
 
 const authMiddlewareCheckOwner = (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = getToken(req);
 
     if (!token) {
       return res.status(401).json({
