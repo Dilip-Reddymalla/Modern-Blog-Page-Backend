@@ -25,27 +25,22 @@ const allowedOrigins = [
   "http://localhost:5173",
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_2,
-];
+].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
 
-    if (!origin || origin === "null") {
-      return callback(null, true);
-    }
+    if (!origin) return callback(null, true);
 
-    const normalizedOrigin = origin.replace(/\/$/, "");
-
-    const normalizedAllowed = allowedOrigins
-      .filter(Boolean)
-      .map(o => o.replace(/\/$/, ""));
-
-    if (normalizedAllowed.includes(normalizedOrigin)) {
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
       return callback(null, true);
     }
 
     console.log("Blocked by CORS:", origin);
-    callback(new Error("CORS not allowed"));
+    callback(new Error(`CORS not allowed: ${origin}`));
   },
   credentials: true,
 }));
