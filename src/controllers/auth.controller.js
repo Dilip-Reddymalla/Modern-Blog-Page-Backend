@@ -9,7 +9,8 @@ async function registerUser(req, res, next) {
       $or: [{ username: username }, { email: email }],
     });
     if (isUserAlreadyExist) {
-      const field = isUserAlreadyExist.username === username ? "Username" : "Email";
+      const field =
+        isUserAlreadyExist.username === username ? "Username" : "Email";
       return res.status(409).json({
         message: `${field} is already taken`,
       });
@@ -39,7 +40,7 @@ async function registerUser(req, res, next) {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1 * 24 * 60 * 60 * 1000 // 1 days 
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
     });
 
     res.status(201).json({
@@ -52,7 +53,8 @@ async function registerUser(req, res, next) {
 
 async function loginUser(req, res, next) {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
+    const email = username;
 
     const user = await userModel.findOne({
       $or: [{ username: username }, { email: email }],
@@ -78,14 +80,14 @@ async function loginUser(req, res, next) {
         status: user.status,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1 * 24 * 60 * 60 * 1000 // 1d
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1d
     });
 
     res.status(200).json({
@@ -115,7 +117,7 @@ async function getAllUsers(req, res, next) {
 
 async function makeAdmin(req, res, next) {
   try {
-    const userId  = req.params.id;
+    const userId = req.params.id;
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
@@ -170,4 +172,10 @@ async function removeAdmin(req, res, next) {
   }
 }
 
-module.exports = { registerUser, loginUser, getAllUsers, makeAdmin, removeAdmin };
+module.exports = {
+  registerUser,
+  loginUser,
+  getAllUsers,
+  makeAdmin,
+  removeAdmin,
+};
